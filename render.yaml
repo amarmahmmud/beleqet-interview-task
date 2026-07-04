@@ -1,0 +1,35 @@
+databases:
+  - name: beleqet-db
+    databaseName: beleqet
+    user: beleqet_user
+
+redis:
+  - name: beleqet-redis
+    ipAllowList: []
+
+services:
+  - type: web
+    name: beleqet-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install && npm run prisma:generate && npm run build
+    startCommand: npx prisma:deploy && npm run start:prod
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: beleqet-db
+          property: connectionString
+      - key: REDIS_URL
+        fromRedis:
+          name: beleqet-redis
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "4000"
+
+  - type: static
+    name: beleqet-frontend
+    rootDir: beleqet-jobs-nextjs
+    buildCommand: npm install && npm run build
+    staticPublishPath: .next
