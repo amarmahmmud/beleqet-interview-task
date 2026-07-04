@@ -28,8 +28,12 @@ services:
       - key: PORT
         value: "4000"
 
-  - type: static
+  - type: web
     name: beleqet-frontend
+    env: node
     rootDir: beleqet-jobs-nextjs
     buildCommand: npm install && npm run build
-    staticPublishPath: .next
+    startCommand: npx serve -s .next
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://beleqet-backend.onrender.com
