@@ -2,12 +2,14 @@ databases:
   - name: beleqet-db
     databaseName: beleqet
     user: beleqet_user
-
-redis:
-  - name: beleqet-redis
-    ipAllowList: []
+    plan: free
 
 services:
+  - type: redis
+    name: beleqet-redis
+    ipAllowList: []
+    plan: free
+
   - type: web
     name: beleqet-backend
     env: node
@@ -20,7 +22,8 @@ services:
           name: beleqet-db
           property: connectionString
       - key: REDIS_URL
-        fromRedis:
+        fromService:
+          type: redis
           name: beleqet-redis
           property: connectionString
       - key: NODE_ENV
